@@ -1,0 +1,153 @@
+﻿@using Desafio.Umbler.Blazor.Dtos
+
+@page "/"
+
+@inject HttpClient Http
+
+<div class="container">
+    <section id="domain-search">
+        <div class="container py-4 pb-md-5">
+            <div id="box-result" class="row">
+                <div class="col-lg-9 col-md-8">
+                    <input class="form-control form-control-lg domain" id="txt-search" name="txt-search" placeholder="Digite o Domínio que deseja pesquisar" type="text" @bind="DomainName">
+                </div>
+                <div class="col-lg-3 col-md-4 text-xs-right">
+                    <button class="btn btn-success btn-block btn-lg custom-button"
+                            @onclick="Get"
+                            disabled="@IsLoading">
+                        @if (IsLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm mr-2"></span>
+                            <span>Pesquisando...</span>
+                        }
+                        else
+                        {
+                            <i class="icon icon-search icon-white mr-1"></i>
+                            <span>Pesquisar</span>
+                        }
+                    </button>
+                </div>
+                <div class="row">
+                    <Alert @ref="alertRef" />
+                </div>
+            </div>
+
+            <div class="container w-100">
+                @if (DomainResult != null)
+                {
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body">
+
+                                    <div class="result-info">
+                                        <p>Domínio:</p>
+                                        <div>
+                                            <h5>@DomainResult.Domain</h5>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="result-info">
+                                                <p>IP: </p>
+                                                <div>
+                                                    <h6>@DomainResult.Ip</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="result-info">
+                                                <p>Hospedado em:</p>
+                                                <div>
+                                                    <h6>@DomainResult.HostedAt</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="result-info">
+                                        <p>Name Servers:</p>
+                                        <div>
+                                            <ul class="list-group list-group-flush mt-2">
+                                                @foreach (var ns in DomainResult.NameServers)
+                                                {
+                                                    <li class="list-group-item px-0">
+                                                        <i class="icon icon-server mr-2"></i>
+                                                        @ns
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    private DomainResultDto? DomainResult;
+    private string DomainName;
+
+    private bool IsLoading;
+
+    private Alert? alertRef;
+
+    async Task Get()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(DomainName))
+            {
+                await alertRef.ShowAsync("Domínio é obrigatório", Alert.AlertType.Warning);
+                return;
+            }
+
+            if (!IsValidDomain(DomainName))
+            {
+                await alertRef.ShowAsync("Domínio fora do padrão, tente adicionar a extenção do domínio", Alert.AlertType.Danger);
+                return;
+            }
+
+            IsLoading = true;
+
+            var response = await Http.GetAsync($"api/domain/{DomainName}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                await alertRef.ShowAsync(errorMessage, Alert.AlertType.Danger);
+                return;
+            }
+
+
+            DomainResult = await response.Content
+                .ReadFromJsonAsync<DomainResultDto>();
+
+            StateHasChanged();
+        }
+        catch(Exception ex)
+        {
+            await alertRef.ShowAsync(ex.Message, Alert.AlertType.Danger);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private bool IsValidDomain(string domain)
+    {
+        if (string.IsNullOrWhiteSpace(domain))
+            return false;
+
+        var regex = @"^(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}$";
+        return System.Text.RegularExpressions.Regex.IsMatch(domain, regex);
+    }
+}

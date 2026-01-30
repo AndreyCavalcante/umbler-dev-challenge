@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <main class="main">
+        <div class="top-row nav-bar">
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+
+    <footer id="footer" class="overflow-hidden footer">
+        <div class="container pt-5 pos-relative">
+            <div class="row flex-lg">
+                <div class="col-lg-12">
+                    <div class="footer-copyright flex-sm flex-sm-middle my-3 text-xs-center text-sm-left">
+                        <a href="/" class="mr-2 hidden-xs-down">
+                            <svg class="img-svg img-logo">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#img-umbler-favicon"></use>
+                            </svg>
+                        </a>
+                        <b class="mr-3 hidden-lg-down">Umbler, Inc. © 2017</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>

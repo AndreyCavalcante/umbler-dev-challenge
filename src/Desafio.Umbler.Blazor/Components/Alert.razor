@@ -1,0 +1,44 @@
+﻿@inject IJSRuntime JS
+
+@if (Visible)
+{
+    <div class="alert @AlertClass" role="alert">
+        @Message
+    </div>
+}
+
+@code {
+    [Parameter] public string Message { get; set; } = "";
+    [Parameter] public AlertType Type { get; set; } = AlertType.Info;
+    [Parameter] public int Duration { get; set; } = 5000;
+
+    private bool Visible { get; set; }
+
+    private string AlertClass => Type switch
+    {
+        AlertType.Success => "alert-success",
+        AlertType.Warning => "alert-warning",
+        AlertType.Danger => "alert-danger",
+        _ => "alert-info"
+    };
+
+    public async Task ShowAsync(string message, AlertType type = AlertType.Info)
+    {
+        Message = message;
+        Type = type;
+        Visible = true;
+        StateHasChanged();
+
+        await Task.Delay(Duration);
+        Visible = false;
+        StateHasChanged();
+    }
+
+    public enum AlertType
+    {
+        Info,
+        Success,
+        Warning,
+        Danger
+    }
+}
