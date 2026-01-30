@@ -95,27 +95,31 @@ Se você rodar o projeto e testar um domínio, verá que ele já está funcionan
 
 - Segue as modificações e melhorias do projeto
 
-# FrontEnd
+FrontEnd
+------
 
 - Implementação de um FrontEnd limpo com Blazor dividindo as responsabilidades do projeto.
 - Implementação de validação de entrada para o campo de domínio, garantindo que apenas domínios válidos sejam submetidos.
 - Melhoria na formatação dos dados retornados pelo backend, exibindo informações como Name Servers, IP e empresa de hospedagem de forma legível e organizada.
 - Adição de mensagens de erro amigáveis quando o domínio não é encontrado ou quando ocorre algum problema na consulta.
 
-# BackEnd
+BackEnd
+------
 
 - Criação de camadas de serviço e repositório, reduzindo a complexidade ciclomática do DomainController.
 - Implementação de DTOs (ViewModels) para retorno ao frontend, evitando expor propriedades desnecessárias como Id, Ttl e UpdatedAt.
 - Adição de validação de entrada no backend, evitando exceptions 500 ao receber domínios inválidos.
 - Refatoração do DomainController para tornar o código mais limpo, testável e modular.
 
-# Testes
+Testes
+------
 
 - Criação de testes unitários para o DomainController, utilizando mocks para consultas DNS e WHOIS.
 - Aumento da cobertura de testes para os serviços de domínio, garantindo que as regras de negócio e validações sejam corretamente verificadas.
 - Implementação do teste unitário que estava comentado, garantindo que todas as funcionalidades obrigatórias estejam cobertas.
 
-# Informações importantes
+Informações importantes
+------
 
 - Foi criado um projeto em Blazor para uma melhora no FrontEnd e uma separação de responsabilidades do projeto, mas é necessário que inicie os dois para funcionar corretamente
 - A conexão com banco de dados foi feita de forma local, mas a string de conexão do appSettings.js foi substituida para a do projeto original para fins de segurança
